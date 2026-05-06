@@ -1,0 +1,14 @@
+﻿# Qt/Visual Studio / build
+*.pro.user
+*.pro.user.*
+build/
+debug/
+release/
+x64/
+.vs/
+*.o
+*.obj
+*.exe
+*.pdb
+*.qrc~
+*.qmake.stash

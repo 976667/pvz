@@ -19,8 +19,8 @@ public:
     int cooldownMsVal;
     qint64 usedAtMs;
     QString text;
-    // show simple temporary message after upgrade
     int upgradeFlashMs = 0;
+    bool showUpgradePreview = false;
 };
 
 #endif // COMMANDCARDITEM_H

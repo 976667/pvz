@@ -22,7 +22,7 @@ void SunFlower::advance(int phase)
         switch (WeatherManager::instance()->current())
         {
         case Weather::Rain:
-            factor = 0.8;   // 雨天更容易生长
+            factor = 0.8;
             break;
         case Weather::Snow:
             factor = 1.1;
@@ -31,7 +31,7 @@ void SunFlower::advance(int phase)
             factor = 1.0;
             break;
         case Weather::Sandstorm:
-            factor = 1.4;   // 沙尘暴时略慢
+            factor = 1.4;
             break;
         case Weather::Clear:
         default:
@@ -39,13 +39,16 @@ void SunFlower::advance(int phase)
             break;
         }
 
-        int currentTime = qMax(1, int(time * factor));
+        int baseTime = time;
+        if (level >= 2) baseTime = int(time * 0.8);
+        if (level >= 3) baseTime = int(time * 0.6);
+        
+        int currentTime = qMax(1, int(baseTime * factor));
         if (++counter >= currentTime)
         {
             counter = 0;
             scene()->addItem(new Sun(pos()));
+            gainExperience(4);
         }
     }
 }
-
-

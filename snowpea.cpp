@@ -21,7 +21,8 @@ void SnowPea::advance(int phase)
         counter = 0;
         if (!collidingItems().isEmpty())
         {
-            Pea *pea = new Pea(atk, true);
+            int effectiveAtk = int(atk * getAttackMultiplier());
+            Pea *pea = new Pea(effectiveAtk, true, this);
             pea->setX(x() + 32);
             pea->setY(y());
             scene()->addItem(pea);

@@ -1,13 +1,21 @@
 #include "pea.h"
 #include "zombie.h"
 #include "weather.h"
+#include "plant.h"
 #include <QRandomGenerator>
 
-Pea::Pea(int attack, bool flag)
+Pea::Pea(int attack, bool flag, Plant *parentPlant)
 {
     snow = flag;
     atk = attack;
     speed = 360.0 * 33 / 1000;
+    m_parentPlant = parentPlant;
+    
+    if (m_parentPlant) {
+        m_attackMultiplier = m_parentPlant->getAttackMultiplier();
+    } else {
+        m_attackMultiplier = 1.0;
+    }
 }
 
 QRectF Pea::boundingRect() const
@@ -59,7 +67,11 @@ void Pea::advance(int phase)
     if (!items.isEmpty())
     {
         Zombie *zombie = qgraphicsitem_cast<Zombie *>(items[QRandomGenerator::global()->bounded(items.size())]);
-        zombie->hp -= atk;
+        int effectiveAtk = int(atk * m_attackMultiplier);
+        zombie->hp -= effectiveAtk;
+        if (m_parentPlant) {
+            m_parentPlant->gainExperience(2);
+        }
         if (snow && zombie->speed > 0.55)
             zombie->speed /= 2;
         delete this;

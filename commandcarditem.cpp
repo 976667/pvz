@@ -26,18 +26,15 @@ void CommandCardItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     Q_UNUSED(option)
     Q_UNUSED(widget)
     QRectF br = boundingRect();
-    // background
     painter->setRenderHint(QPainter::Antialiasing, true);
     painter->setPen(Qt::NoPen);
     painter->setBrush(QColor(245, 245, 245, 230));
     painter->drawRoundedRect(br, 6, 6);
 
-    // icon on the left
     QRectF iconRect(br.left() + 6, br.top() + 8, 24, 24);
     QPixmap icon = QPixmap(":/images/Sun.png").scaled(24, 24, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     painter->drawPixmap(iconRect.toRect(), icon);
 
-    // text area
     QRectF textRect(iconRect.right() + 8, br.top() + 4, br.width() - iconRect.width() - 22, br.height() - 8);
     QFont font;
     font.setPointSizeF(11);
@@ -45,7 +42,6 @@ void CommandCardItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     painter->setPen(Qt::black);
     painter->drawText(textRect, Qt::AlignVCenter | Qt::AlignLeft, text);
 
-    // draw level badge at top-right of card
     CommandCard *card = CommandManager::instance()->cardById(id);
     if (card) {
         QString lvl = QString("Lv%1").arg(card->level);
@@ -58,9 +54,61 @@ void CommandCardItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
         painter->drawRoundedRect(badgeRect, 4, 4);
         painter->setPen(Qt::black);
         painter->drawText(badgeRect, Qt::AlignCenter, lvl);
+
+        if (card->level < card->maxLevel) {
+            int expNeeded = card->getExpForNextLevel();
+            if (expNeeded > 0) {
+                QRectF expBarRect(textRect.left(), textRect.bottom() - 6, textRect.width(), 4);
+                painter->setBrush(QColor(180, 180, 180, 200));
+                painter->setPen(Qt::NoPen);
+                painter->drawRect(expBarRect);
+
+                qreal expProgress = qreal(card->experience) / qreal(expNeeded);
+                QRectF expFillRect(expBarRect.left(), expBarRect.top(),
+                                   expBarRect.width() * expProgress, expBarRect.height());
+                if (card->selectedPath == CommandCard::PATH_SPEED)
+                    painter->setBrush(QColor(100, 180, 255, 200));
+                else if (card->selectedPath == CommandCard::PATH_ECONOMY)
+                    painter->setBrush(QColor(255, 215, 0, 200));
+                else
+                    painter->setBrush(QColor(255, 100, 100, 200));
+                painter->drawRect(expFillRect);
+            }
+        }
+
+        if (upgradeFlashMs > 0) {
+            QColor flashColor(255, 255, 200, 150);
+            painter->setBrush(flashColor);
+            painter->drawRoundedRect(br, 6, 6);
+        }
+
+        if (showUpgradePreview && card->canUpgrade()) {
+            QRectF previewRect(br.left(), br.bottom() + 2, br.width(), 30);
+            painter->setBrush(QColor(50, 50, 50, 240));
+            painter->setPen(Qt::white);
+            painter->drawRoundedRect(previewRect, 4, 4);
+
+            QString previewText;
+            if (card->selectedPath == CommandCard::PATH_SPEED) {
+                int newCooldown = int(card->cooldownMs * 0.85);
+                previewText = QString("冷却: %1ms → %2ms").arg(card->cooldownMs).arg(newCooldown);
+            } else if (card->selectedPath == CommandCard::PATH_ECONOMY) {
+                int currentAmount = card->params.value("amount", 0).toInt();
+                int newAmount = currentAmount + 25;
+                previewText = QString("产出: %1 → %2 (+25)").arg(currentAmount).arg(newAmount);
+            } else if (card->selectedPath == CommandCard::PATH_POWER) {
+                double currentMult = card->params.value("multiplier", 1.0).toDouble();
+                double newMult = currentMult + 0.5;
+                previewText = QString("效果: %1x → %2x").arg(currentMult, 0, 'f', 1).arg(newMult, 0, 'f', 1);
+            }
+
+            QFont previewFont;
+            previewFont.setPointSizeF(8);
+            painter->setFont(previewFont);
+            painter->drawText(previewRect, Qt::AlignCenter, previewText);
+        }
     }
 
-    // horizontal cooldown overlay (fills from right toward left)
     if (usedAtMs != 0) {
         qint64 elapsed = CommandManager::instance()->currentGameMs() - usedAtMs;
         if (elapsed < cooldownMsVal) {

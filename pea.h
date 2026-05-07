@@ -3,10 +3,12 @@
 
 #include "other.h"
 
+class Plant;
+
 class Pea : public Other
 {
 public:
-    Pea(int attack = 0, bool flag = false);
+    Pea(int attack = 0, bool flag = false, Plant *parentPlant = nullptr);
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     bool collidesWithItem(const QGraphicsItem *other, Qt::ItemSelectionMode mode) const override;
@@ -15,6 +17,8 @@ private:
     bool snow;
     int atk;
     qreal speed;
+    Plant *m_parentPlant;
+    double m_attackMultiplier;
 };
 
 #endif // PEA_H

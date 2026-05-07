@@ -91,7 +91,6 @@ void CommandManager::syncToGameTimer(QTimer *gameTimer, int baseIntervalMs)
 
 void CommandManager::onGameTick()
 {
-}
     m_gameMs += qint64(m_baseIntervalMs * speedMultiplier());
 }
 

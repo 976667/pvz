@@ -21,7 +21,8 @@ void Peashooter::advance(int phase)
         counter = 0;
         if (!collidingItems().isEmpty())
         {
-            Pea *pea = new Pea(atk);
+            int effectiveAtk = int(atk * getAttackMultiplier());
+            Pea *pea = new Pea(effectiveAtk, false, this);
             pea->setX(x() + 32);
             pea->setY(y());
             scene()->addItem(pea);

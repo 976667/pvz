@@ -22,6 +22,10 @@ public:
     int type() const override;
     void setMovie(QString path);
     void setHead(QString path);
+
+    int getEffectiveHp() const;
+    int getEffectiveAtk() const;
+
 protected:
     QMovie *movie;
     QMovie *head;

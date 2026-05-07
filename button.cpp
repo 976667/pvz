@@ -1,4 +1,5 @@
 #include "button.h"
+#include "commandmanager.h"
 
 Button::Button(QMediaPlayer *s, QTimer *t)
 {

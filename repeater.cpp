@@ -22,11 +22,12 @@ void Repeater::advance(int phase)
         QList<QGraphicsItem *> items = collidingItems();
         if (!collidingItems().isEmpty())
         {
-            Pea *pea = new Pea(atk);
+            int effectiveAtk = int(atk * getAttackMultiplier());
+            Pea *pea = new Pea(effectiveAtk, false, this);
             pea->setX(x() + 32);
             pea->setY(y());
             scene()->addItem(pea);
-            pea = new Pea(atk);
+            pea = new Pea(effectiveAtk, false, this);
             pea->setX(x() + 64);
             pea->setY(y());
             scene()->addItem(pea);

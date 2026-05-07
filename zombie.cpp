@@ -1,5 +1,6 @@
 #include "zombie.h"
 #include "plant.h"
+#include "commandmanager.h"
 #include <QDebug>
 
 Zombie::Zombie()
@@ -85,4 +86,20 @@ void Zombie::setHead(QString path)
         delete head;
     head = new QMovie(path);
     head->start();
+}
+
+int Zombie::getEffectiveHp() const
+{
+    CommandManager *mgr = CommandManager::instance();
+    double playerMult = mgr->speedMultiplier();
+    double balanceMult = 1.0 + (playerMult - 1.0) * 0.5;
+    return int(double(hp) * balanceMult);
+}
+
+int Zombie::getEffectiveAtk() const
+{
+    CommandManager *mgr = CommandManager::instance();
+    double playerMult = mgr->speedMultiplier();
+    double balanceMult = 1.0 + (playerMult - 1.0) * 0.3;
+    return int(double(atk) * balanceMult);
 }

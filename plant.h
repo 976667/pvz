@@ -19,6 +19,16 @@ public:
     bool collidesWithItem(const QGraphicsItem *other, Qt::ItemSelectionMode mode) const override;
     int type() const override;
     void setMovie(QString path);
+
+    int experience;
+    int level;
+    virtual int getMaxHp() const { return 300; }
+
+    void gainExperience(int exp);
+    void checkLevelUp();
+    double getAttackMultiplier() const;
+    double getSpeedMultiplier() const;
+
 protected:
     QMovie *movie;
     int atk;

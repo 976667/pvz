@@ -1,14 +1,16 @@
 #include "wallnut.h"
+#include "commandmanager.h"
 #include <QDebug>
 
 WallNut::WallNut()
 {
-    maxHp = 4000;
+    baseHp = 4000;
+    maxHp = baseHp;
     hp = maxHp;
     lastHp = maxHp;
     state = 0;
     counter = 0;
-    time = 200;
+    time = 60;
     setMovie(":/images/WallNut.gif");
 }
 
@@ -17,19 +19,13 @@ void WallNut::advance(int phase)
     if (!phase)
         return;
     update();
-    
-    static int lastLevel = 1;
-    if (level != lastLevel) {
-        if (level == 2) {
-            maxHp = 6000;
-        } else if (level == 3) {
-            maxHp = 9000;
-        }
+
+    maxHp = int(baseHp * getHpMultiplier());
+    if (hp > maxHp) {
         hp = maxHp;
-        lastHp = maxHp;
-        lastLevel = level;
     }
-    
+    lastHp = maxHp;
+
     if (hp < lastHp) {
         int damageTaken = lastHp - hp;
         if (damageTaken > 0) {
@@ -37,27 +33,32 @@ void WallNut::advance(int phase)
         }
         lastHp = hp;
     }
-    
+
     if (hp <= 0)
     {
         delete this;
         return;
     }
-    
-    if (hp <= maxHp / 3 && state != 2)
+
+    if (hp <= maxHp * 0.3 && state != 2)
     {
         state = 2;
         setMovie(":/images/WallNut2.gif");
     }
-    else if (maxHp / 3 < hp && hp <= maxHp * 2 / 3 && state != 1)
+    else if (maxHp * 0.3 < hp && hp <= maxHp * 0.6 && state != 1)
     {
         state = 1;
         setMovie(":/images/WallNut1.gif");
     }
-    
-    if (++counter >= time)
+
+    if (++counter >= CommandManager::instance()->effectiveTicksFor(time))
     {
         counter = 0;
-        gainExperience(5);
+        gainExperience(4);
     }
+}
+
+double WallNut::getHpMultiplier() const
+{
+    return 1.0 + (level - 1) * 0.5;
 }

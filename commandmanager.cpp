@@ -1,6 +1,9 @@
 #include "commandmanager.h"
 #include <QDebug>
 #include <QTimer>
+#include <QGraphicsScene>
+#include <QGraphicsItem>
+#include "plant.h"
 
 // for QPointer
 #include <QPointer>
@@ -98,4 +101,31 @@ int CommandManager::effectiveTicksFor(int baseTicks) const
 {
     double mult = qMax(1.0, speedMultiplier());
     return qMax(1, int(double(baseTicks) / mult));
+}
+
+double CommandManager::getAveragePlantLevel() const
+{
+    if (!m_gameTimer || !m_gameTimer->parent())
+        return 1.0;
+
+    QGraphicsScene *scene = qobject_cast<QGraphicsScene *>(m_gameTimer->parent());
+    if (!scene)
+        return 1.0;
+
+    QList<QGraphicsItem *> items = scene->items();
+    int totalLevel = 0;
+    int plantCount = 0;
+
+    for (QGraphicsItem *item : items) {
+        Plant *plant = qgraphicsitem_cast<Plant *>(item);
+        if (plant) {
+            totalLevel += plant->level;
+            ++plantCount;
+        }
+    }
+
+    if (plantCount == 0)
+        return 1.0;
+
+    return double(totalLevel) / double(plantCount);
 }

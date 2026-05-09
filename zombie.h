@@ -25,6 +25,7 @@ public:
 
     int getEffectiveHp() const;
     int getEffectiveAtk() const;
+    double getPlantBalanceMultiplier() const;
 
 protected:
     QMovie *movie;

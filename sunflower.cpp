@@ -40,8 +40,8 @@ void SunFlower::advance(int phase)
         }
 
         int baseTime = time;
-        if (level >= 2) baseTime = int(time * 0.8);
-        if (level >= 3) baseTime = int(time * 0.6);
+        if (level >= 2) baseTime = int(time * 0.7);
+        if (level >= 3) baseTime = int(time * 0.4);
         
         int currentTime = qMax(1, int(baseTime * factor));
         if (++counter >= currentTime)
@@ -51,4 +51,9 @@ void SunFlower::advance(int phase)
             gainExperience(4);
         }
     }
+}
+
+double SunFlower::getCooldownMultiplier() const
+{
+    return 1.0 / (1.0 + (level - 1) * 0.4);
 }

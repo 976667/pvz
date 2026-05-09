@@ -24,6 +24,7 @@ public:
     void addDefaultCards();
     // attempt to use card by id, returns effect value (e.g., sun amount) or 0 if cannot use
     int useCard(const QString &id);
+    double getAveragePlantLevel() const;
 
 signals:
     void cardUsed(const QString &id, const QVariantMap &params);

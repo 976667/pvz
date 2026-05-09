@@ -44,30 +44,28 @@ void Plant::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 
     int maxHealth = getMaxHp();
 
-    if (hp < maxHealth) {
-        QRectF healthBarRect(-30, 38, 60, 6);
-        painter->setBrush(QColor(100, 100, 100, 200));
-        painter->setPen(Qt::NoPen);
-        painter->drawRect(healthBarRect);
+    QRectF healthBarRect(-30, 38, 60, 6);
+    painter->setBrush(QColor(100, 100, 100, 200));
+    painter->setPen(Qt::NoPen);
+    painter->drawRect(healthBarRect);
 
-        qreal healthPercent = qreal(hp) / qreal(maxHealth);
-        healthPercent = qBound(0.0, healthPercent, 1.0);
-        QRectF healthFillRect(healthBarRect.left(), healthBarRect.top(),
-                              healthBarRect.width() * healthPercent, healthBarRect.height());
+    qreal healthPercent = qreal(hp) / qreal(maxHealth);
+    healthPercent = qBound(0.0, healthPercent, 1.0);
+    QRectF healthFillRect(healthBarRect.left(), healthBarRect.top(),
+                          healthBarRect.width() * healthPercent, healthBarRect.height());
 
-        if (healthPercent > 0.6)
-            painter->setBrush(QColor(0, 200, 0, 220));
-        else if (healthPercent > 0.3)
-            painter->setBrush(QColor(255, 200, 0, 220));
-        else
-            painter->setBrush(QColor(255, 0, 0, 220));
+    if (healthPercent > 0.6)
+        painter->setBrush(QColor(0, 200, 0, 220));
+    else if (healthPercent > 0.3)
+        painter->setBrush(QColor(255, 200, 0, 220));
+    else
+        painter->setBrush(QColor(255, 0, 0, 220));
 
-        painter->drawRect(healthFillRect);
+    painter->drawRect(healthFillRect);
 
-        painter->setPen(QPen(Qt::black, 1));
-        painter->setBrush(Qt::NoBrush);
-        painter->drawRect(healthBarRect);
-    }
+    painter->setPen(QPen(Qt::black, 1));
+    painter->setBrush(Qt::NoBrush);
+    painter->drawRect(healthBarRect);
 }
 
 bool Plant::collidesWithItem(const QGraphicsItem *other, Qt::ItemSelectionMode mode) const
@@ -106,7 +104,7 @@ void Plant::checkLevelUp()
 
 double Plant::getAttackMultiplier() const
 {
-    return 1.0 + (level - 1) * 0.3;
+    return 1.0 + (level - 1) * 0.5;
 }
 
 double Plant::getSpeedMultiplier() const

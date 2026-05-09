@@ -3,7 +3,7 @@
 
 BasicZombie::BasicZombie()
 {
-    hp = 270;
+    hp = 200;
     atk = 100 * 33 / 1000;
     speed = 80.0 * 33 / 1000 / 4.7;
     if (QRandomGenerator::global()->bounded(2))

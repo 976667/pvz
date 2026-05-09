@@ -28,6 +28,8 @@ public:
     void checkLevelUp();
     double getAttackMultiplier() const;
     double getSpeedMultiplier() const;
+    virtual double getHpMultiplier() const { return 1.0; }
+    virtual double getCooldownMultiplier() const { return 1.0; }
 
 protected:
     QMovie *movie;

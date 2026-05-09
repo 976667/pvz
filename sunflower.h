@@ -9,6 +9,7 @@ class SunFlower : public Plant
 public:
     SunFlower();
     void advance(int phase) override;
+    double getCooldownMultiplier() const override;
 };
 
 #endif // SUNFLOWER_H

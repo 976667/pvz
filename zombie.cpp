@@ -92,7 +92,8 @@ int Zombie::getEffectiveHp() const
 {
     CommandManager *mgr = CommandManager::instance();
     double playerMult = mgr->speedMultiplier();
-    double balanceMult = 1.0 + (playerMult - 1.0) * 0.5;
+    double plantBalanceMult = getPlantBalanceMultiplier();
+    double balanceMult = 1.0 + (playerMult - 1.0) * 0.5 + (plantBalanceMult - 1.0) * 0.5;
     return int(double(hp) * balanceMult);
 }
 
@@ -100,6 +101,13 @@ int Zombie::getEffectiveAtk() const
 {
     CommandManager *mgr = CommandManager::instance();
     double playerMult = mgr->speedMultiplier();
-    double balanceMult = 1.0 + (playerMult - 1.0) * 0.3;
+    double plantBalanceMult = getPlantBalanceMultiplier();
+    double balanceMult = 1.0 + (playerMult - 1.0) * 0.3 + (plantBalanceMult - 1.0) * 0.4;
     return int(double(atk) * balanceMult);
+}
+
+double Zombie::getPlantBalanceMultiplier() const
+{
+    double avgLevel = CommandManager::instance()->getAveragePlantLevel();
+    return 1.0 + (avgLevel - 1.0) * 0.5;
 }

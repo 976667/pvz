@@ -240,18 +240,50 @@ void MainWindow::addZombie()
         counter = 0;
         time = QRandomGenerator::global()->bounded(2 * maxtime / 3) + maxtime / 3;
         int type = QRandomGenerator::global()->bounded(100);
+        static int frameCounter = 0;
+        frameCounter++;
+        int bucketFrame = 60 * 1000 / 33;
+        int screenFrame = 2 * 60 * 1000 / 33;
+        int footballFrame = 3 * 60 * 1000 / 33;
+
         int i = QRandomGenerator::global()->bounded(5);
         Zombie *zombie;
-        if (type < 35)
-            zombie = new BasicZombie;
-        else if (type < 62)
-            zombie = new ConeZombie;
-        else if (type < 75)
-            zombie = new BucketZombie;
-        else if (type < 86)
-            zombie = new ScreenZombie;
-        else
-            zombie = new FootballZombie;
+        int rand = QRandomGenerator::global()->bounded(100);
+
+        if (frameCounter < bucketFrame) {
+            if (rand < 60)
+                zombie = new ConeZombie;
+            else
+                zombie = new BasicZombie;
+        } else if (frameCounter < screenFrame) {
+            if (rand < 10)
+                zombie = new BucketZombie;
+            else if (rand < 60)
+                zombie = new ConeZombie;
+            else
+                zombie = new BasicZombie;
+        } else if (frameCounter < footballFrame) {
+            if (rand < 10)
+                zombie = new ScreenZombie;
+            else if (rand < 20)
+                zombie = new BucketZombie;
+            else if (rand < 60)
+                zombie = new ConeZombie;
+            else
+                zombie = new BasicZombie;
+        } else {
+            if (rand < 5)
+                zombie = new FootballZombie;
+            else if (rand < 15)
+                zombie = new ScreenZombie;
+            else if (rand < 25)
+                zombie = new BucketZombie;
+            else if (rand < 60)
+                zombie = new ConeZombie;
+            else
+                zombie = new BasicZombie;
+        }
+
         zombie->setPos(1028, 130 + 98 * i);
         scene->addItem(zombie);
     }

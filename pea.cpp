@@ -2,6 +2,7 @@
 #include "zombie.h"
 #include "weather.h"
 #include "plant.h"
+#include "commandmanager.h"
 #include <QRandomGenerator>
 
 Pea::Pea(int attack, bool flag, Plant *parentPlant)
@@ -10,7 +11,7 @@ Pea::Pea(int attack, bool flag, Plant *parentPlant)
     atk = attack;
     speed = 360.0 * 33 / 1000;
     m_parentPlant = parentPlant;
-    
+
     if (m_parentPlant) {
         m_attackMultiplier = m_parentPlant->getAttackMultiplier();
     } else {
@@ -77,7 +78,7 @@ void Pea::advance(int phase)
         delete this;
         return;
     }
-    setX(x() + speed * factor);
+    setX(x() + speed * factor * CommandManager::instance()->speedMultiplier());
     if (x() > 1069)
         delete this;
 }

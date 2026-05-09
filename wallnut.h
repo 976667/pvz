@@ -9,10 +9,12 @@ public:
     WallNut();
     void advance(int phase) override;
     int getMaxHp() const override { return maxHp; }
+    double getHpMultiplier() const override;
 private:
     int counter;
     int time;
     int maxHp;
+    int baseHp;
     int lastHp;
 };
 

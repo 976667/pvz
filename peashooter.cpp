@@ -16,13 +16,13 @@ void Peashooter::advance(int phase)
     update();
     if (hp <= 0)
         delete this;
-    else if (++counter >= CommandManager::instance()->effectiveTicksFor(time))
+    else if (++counter >= time)
     {
         counter = 0;
         if (!collidingItems().isEmpty())
         {
             int effectiveAtk = int(atk * getAttackMultiplier());
-            Pea *pea = new Pea(effectiveAtk, false, this);
+            Pea *pea = new Pea(effectiveAtk, false, nullptr);
             pea->setX(x() + 32);
             pea->setY(y());
             scene()->addItem(pea);

@@ -24,7 +24,6 @@ void WallNut::advance(int phase)
     if (hp > maxHp) {
         hp = maxHp;
     }
-    lastHp = maxHp;
 
     if (hp < lastHp) {
         int damageTaken = lastHp - hp;
@@ -61,4 +60,16 @@ void WallNut::advance(int phase)
 double WallNut::getHpMultiplier() const
 {
     return 1.0 + (level - 1) * 0.5;
+}
+
+void WallNut::checkLevelUp()
+{
+    static const int expRequired[] = {0, 500, 1500, 10000};
+    if (level < 3 && experience >= expRequired[level]) {
+        experience -= expRequired[level];
+        ++level;
+        maxHp = int(baseHp * getHpMultiplier());
+        hp = maxHp;
+        lastHp = maxHp;
+    }
 }

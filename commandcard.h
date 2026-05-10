@@ -27,7 +27,7 @@ public:
     int cooldownMs;
     int level = 1;
     int maxLevel = 3;
-    int upgradeCost = 200;
+    int upgradeCost = 1000;
     int experience = 0;
     QVariantMap params;
     UpgradePath selectedPath = PATH_SPEED;

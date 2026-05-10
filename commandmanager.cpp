@@ -48,20 +48,19 @@ void CommandManager::addDefaultCards()
         CommandCard *c = new CommandCard(this);
         c->id = "instant_sun";
         c->name = "Sun Card";
-        c->cooldownMs = 5000; // 5s cooldown
-        c->params["amount"] = 150;
+        c->cooldownMs = 120000;
+        c->params["amount"] = 200;
         m_cards.insert(c->id, c);
     }
     if (!m_cards.contains("speed_boost")) {
         CommandCard *c = new CommandCard(this);
         c->id = "speed_boost";
         c->name = "Speed Boost";
-        c->cooldownMs = 5000;
+        c->cooldownMs = 120000;
         c->params["durationMs"] = 5000;
-        c->params["multiplier"] = 2; // 2x speed
+        c->params["multiplier"] = 2;
         m_cards.insert(c->id, c);
     }
-    
 }
 
 int CommandManager::useCard(const QString &id)

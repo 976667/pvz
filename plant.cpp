@@ -30,7 +30,7 @@ void Plant::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     painter->setRenderHint(QPainter::Antialiasing, true);
     QFont font;
     font.setPointSizeF(14);
-    font.setBold(true);
+    font->setBold(true);
     painter->setFont(font);
 
     QRectF badgeRect(-42, -32, 22, 22);
@@ -96,9 +96,10 @@ void Plant::gainExperience(int exp)
 void Plant::checkLevelUp()
 {
     static const int expRequired[] = {0, 500, 1500, 10000};
-    while (level < 3 && experience >= expRequired[level]) {
+    if (level < 3 && experience >= expRequired[level]) {
         experience -= expRequired[level];
         ++level;
+        hp = getMaxHp();
     }
 }
 

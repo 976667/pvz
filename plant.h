@@ -25,7 +25,7 @@ public:
     virtual int getMaxHp() const { return 300; }
 
     void gainExperience(int exp);
-    void checkLevelUp();
+    virtual void checkLevelUp();
     double getAttackMultiplier() const;
     double getSpeedMultiplier() const;
     virtual double getHpMultiplier() const { return 1.0; }

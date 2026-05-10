@@ -1,4 +1,5 @@
 #include "weather.h"
+#include "commandmanager.h"
 #include <QTimer>
 #include <QRandomGenerator>
 
@@ -26,7 +27,8 @@ void WeatherManager::start(int intervalMs)
         return;
     if (m_timer->isActive())
         m_timer->stop();
-    m_timer->start(intervalMs);
+    if (!m_gameTimer)
+        m_timer->start(intervalMs);
 }
 
 void WeatherManager::syncToGameTimer(QTimer *gameTimer, int baseIntervalMs)
@@ -47,9 +49,8 @@ void WeatherManager::onGameTick()
     if (!m_gameTimer) return;
     if (m_baseIntervalMs <= 0.0) return;
 
-    // 按“游戏时间”累计：每个游戏 tick 代表基准间隔的时间长度
-    // 这样 2x/4x 速度下，天气会按同样倍数更快切换。
-    m_accumulatedMs += m_baseIntervalMs;
+    double speedMult = CommandManager::instance()->speedMultiplier();
+    m_accumulatedMs += m_baseIntervalMs * speedMult;
     if (m_accumulatedMs >= m_intervalMs) {
         m_accumulatedMs -= m_intervalMs;
         nextWeather();

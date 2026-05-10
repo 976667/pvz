@@ -230,6 +230,13 @@ void MainWindow::addZombie()
     static int maxtime = 20 * 1000 / 33;
     static int time = maxtime / 2;
     static int counter = 0;
+    static int gameFrame = 0;
+    gameFrame++;
+    
+    int bucketFrame = 60 * 1000 / 33;
+    int screenFrame = 2 * 60 * 1000 / 33;
+    int footballFrame = 3 * 60 * 1000 / 33;
+    
     if (++counter >= time)
     {
         if (++low > high)
@@ -239,30 +246,24 @@ void MainWindow::addZombie()
         }
         counter = 0;
         time = QRandomGenerator::global()->bounded(2 * maxtime / 3) + maxtime / 3;
-        int type = QRandomGenerator::global()->bounded(100);
-        static int frameCounter = 0;
-        frameCounter++;
-        int bucketFrame = 60 * 1000 / 33;
-        int screenFrame = 2 * 60 * 1000 / 33;
-        int footballFrame = 3 * 60 * 1000 / 33;
 
         int i = QRandomGenerator::global()->bounded(5);
         Zombie *zombie;
         int rand = QRandomGenerator::global()->bounded(100);
 
-        if (frameCounter < bucketFrame) {
+        if (gameFrame < bucketFrame) {
             if (rand < 60)
                 zombie = new ConeZombie;
             else
                 zombie = new BasicZombie;
-        } else if (frameCounter < screenFrame) {
+        } else if (gameFrame < screenFrame) {
             if (rand < 10)
                 zombie = new BucketZombie;
             else if (rand < 60)
                 zombie = new ConeZombie;
             else
                 zombie = new BasicZombie;
-        } else if (frameCounter < footballFrame) {
+        } else if (gameFrame < footballFrame) {
             if (rand < 10)
                 zombie = new ScreenZombie;
             else if (rand < 20)

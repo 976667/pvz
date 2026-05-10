@@ -10,6 +10,7 @@ public:
     void advance(int phase) override;
     int getMaxHp() const override { return maxHp; }
     double getHpMultiplier() const override;
+    void checkLevelUp() override;
 private:
     int counter;
     int time;

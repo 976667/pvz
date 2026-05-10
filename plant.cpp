@@ -30,7 +30,7 @@ void Plant::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     painter->setRenderHint(QPainter::Antialiasing, true);
     QFont font;
     font.setPointSizeF(14);
-    font->setBold(true);
+    font.setBold(true);
     painter->setFont(font);
 
     QRectF badgeRect(-42, -32, 22, 22);

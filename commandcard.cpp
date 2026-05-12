@@ -1,6 +1,5 @@
 #include "commandcard.h"
 #include "commandmanager.h"
-
 CommandCard::CommandCard(QObject *parent)
     : QObject(parent), cooldownMs(0)
 {
@@ -8,59 +7,49 @@ CommandCard::CommandCard(QObject *parent)
         upgradeEffects[i] = UpgradeEffect();
     }
 }
-
 bool CommandCard::canUse() const
 {
     qint64 now = CommandManager::instance()->currentGameMs();
     return (now - m_lastUsedMs) >= qint64(cooldownMs);
 }
-
 void CommandCard::used()
 {
     m_lastUsedMs = CommandManager::instance()->currentGameMs();
 }
-
 bool CommandCard::canUpgrade() const
 {
     return level < maxLevel && CommandManager::instance()->cardById(id);
 }
-
 bool CommandCard::canGainLevel() const
 {
     return level < maxLevel;
 }
-
 int CommandCard::getExpForNextLevel() const
 {
     static const int expTable[] = {0, 100, 300, 600, 1000};
     if (level >= maxLevel) return INT_MAX;
     return expTable[level];
 }
-
 CommandCard::UpgradeEffect CommandCard::getEffectForLevel(int lvl) const
 {
     if (lvl <= 0) lvl = 1;
     if (lvl > maxLevel) lvl = maxLevel;
     return upgradeEffects[lvl - 1];
 }
-
 void CommandCard::addExperience(int exp)
 {
     if (!canGainLevel()) return;
     experience += exp;
-
     while (experience >= getExpForNextLevel() && canGainLevel()) {
         experience -= getExpForNextLevel();
         ++level;
         applyUpgradeEffect();
     }
 }
-
 void CommandCard::doUpgrade()
 {
     if (!canUpgrade()) return;
     ++level;
-
     if (selectedPath == PATH_SPEED) {
         cooldownMs = qMax(1000, int(cooldownMs * 0.85));
     } else if (selectedPath == PATH_ECONOMY) {
@@ -72,10 +61,8 @@ void CommandCard::doUpgrade()
             params["multiplier"] = params["multiplier"].toDouble() + 0.5;
         }
     }
-
     upgradeCost = upgradeCost * 2;
 }
-
 void CommandCard::applyUpgradeEffect()
 {
     if (selectedPath == PATH_SPEED) {

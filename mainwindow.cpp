@@ -8,7 +8,6 @@
 #include <QSvgRenderer>
 #include "commandmanager.h"
 #include "weathereffect.h"
-
 static QPixmap renderWeatherIcon(const QString &resourcePath, int size = 40)
 {
     QPixmap pixmap(size, size);
@@ -26,7 +25,6 @@ static QPixmap renderWeatherIcon(const QString &resourcePath, int size = 40)
     painter.end();
     return pixmap;
 }
-
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     sound = new QMediaPlayer(this);
@@ -34,7 +32,21 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     sound->setAudioOutput(audioOutput);
     audioOutput->setVolume(0.6f);
     sound->setLoops(QMediaPlayer::Infinite);
-    sound->setSource(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/Grazy Dave.mp3"));
+    
+    // 背景音乐配置 - 使用绝对路径避免中文路径问题
+    QString musicPath = "C:/Users/Zhou Ruiheng/Desktop/C++项目(NK)/pvz(2)/Grazy Dave.mp3";
+    qDebug() << "音乐文件路径:" << musicPath;
+    qDebug() << "文件是否存在:" << QFile::exists(musicPath);
+    
+    QUrl musicUrl = QUrl::fromLocalFile(musicPath);
+    qDebug() << "转换后的URL:" << musicUrl;
+    sound->setSource(musicUrl);
+    
+    // 错误处理
+    QObject::connect(sound, &QMediaPlayer::errorOccurred, [](QMediaPlayer::Error error) {
+        qDebug() << "音乐播放错误:" << error;
+    });
+    
     timer = new QTimer;
     scene = new QGraphicsScene(this);
     scene->setSceneRect(150, 0, 900, 600);
@@ -72,7 +84,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     QGraphicsRectItem *weatherBg = scene->addRect(168, 8, 58, 48, QPen(Qt::NoPen), 
                                                    QBrush(QColor(0, 0, 0, 120)));
     weatherBg->setZValue(15);
-
     weatherIcon = scene->addPixmap(renderWeatherIcon(":/images/weather_clear.svg", 40));
     weatherIcon->setPos(170, 10);
     weatherIcon->setZValue(20);
@@ -103,7 +114,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
                 break;
         }
     });
-
     connect(weatherMgr, &WeatherManager::weatherChanged, this, [this](Weather w) {
         QString text;
         QPixmap bg = originalBackground;
@@ -143,12 +153,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         painter.end();
         view->setBackgroundBrush(bg);
     });
-    weatherMgr->start(15000);
+    weatherMgr->start(30000);  // 30秒切换一次天气（1倍速）
     
     sound->play();
     timer->start(33);
     view->show();
-
     // Command card system (quick test): add default cards and a compact graphical card
     CommandManager::instance()->addDefaultCards();
     // create compact CommandCardItem instances for default command cards
@@ -167,15 +176,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         item->setPos(x, 560);
         scene->addItem(item);
         item->setZValue(200);
+        // 设置卡片在游戏开始时就能使用（冷却已结束）
+        item->setReady();
         x += spacing;
     }
     // 同步命令管理器到游戏主计时器并连接效果处理
     CommandManager::instance()->syncToGameTimer(timer, 33);
     connect(CommandManager::instance(), &CommandManager::cardUsed, this, &MainWindow::handleCardUsed);
     connect(timer, &QTimer::timeout, this, &MainWindow::onGameTick);
-
 }
-
 void MainWindow::handleCardUsed(const QString &id, const QVariantMap &params)
 {
     if (id == "instant_sun") {
@@ -196,7 +205,6 @@ void MainWindow::handleCardUsed(const QString &id, const QVariantMap &params)
         m_activeEffects.append(effect);
     }
 }
-
 void MainWindow::onGameTick()
 {
     qint64 now = CommandManager::instance()->currentGameMs();
@@ -213,7 +221,6 @@ void MainWindow::onGameTick()
         }
     }
 }
-
 MainWindow::~MainWindow()
 {
     delete audioOutput;
@@ -222,7 +229,6 @@ MainWindow::~MainWindow()
     delete scene;
     delete view;
 }
-
 void MainWindow::addZombie()
 {
     static int low = 4;
@@ -246,11 +252,9 @@ void MainWindow::addZombie()
         }
         counter = 0;
         time = QRandomGenerator::global()->bounded(2 * maxtime / 3) + maxtime / 3;
-
         int i = QRandomGenerator::global()->bounded(5);
         Zombie *zombie;
         int rand = QRandomGenerator::global()->bounded(100);
-
         if (gameFrame < bucketFrame) {
             if (rand < 60)
                 zombie = new ConeZombie;
@@ -284,12 +288,10 @@ void MainWindow::addZombie()
             else
                 zombie = new BasicZombie;
         }
-
         zombie->setPos(1028, 130 + 98 * i);
         scene->addItem(zombie);
     }
 }
-
 void MainWindow::check()
 {
     static int time = 1 * 1000 / 33;
@@ -308,7 +310,6 @@ void MainWindow::check()
             }
     }
 }
-
 void MainWindow::clearWeatherEffects()
 {
     // 先收集所有Particle类型的items到list中，然后再删除
@@ -327,7 +328,6 @@ void MainWindow::clearWeatherEffects()
         delete p;
     }
 }
-
 void MainWindow::createRainEffect(int count)
 {
     for (int i = 0; i < count; ++i) {
@@ -338,7 +338,6 @@ void MainWindow::createRainEffect(int count)
         raindrop->setZValue(100);
     }
 }
-
 void MainWindow::createSnowEffect(int count)
 {
     for (int i = 0; i < count; ++i) {
@@ -349,7 +348,6 @@ void MainWindow::createSnowEffect(int count)
         snowflake->setZValue(100);
     }
 }
-
 void MainWindow::createWindEffect(int count)
 {
     for (int i = 0; i < count; ++i) {
@@ -360,7 +358,6 @@ void MainWindow::createWindEffect(int count)
         windParticle->setZValue(100);
     }
 }
-
 void MainWindow::createSandstormEffect(int count)
 {
     for (int i = 0; i < count; ++i) {

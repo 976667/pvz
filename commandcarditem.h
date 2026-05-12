@@ -12,6 +12,7 @@ public:
     void advance(int phase) override;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
+    void setReady();  // 设置卡片为就绪状态（游戏开始时可用）
 
     QString id;
     int counter;

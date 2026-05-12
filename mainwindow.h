@@ -1,6 +1,5 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -16,7 +15,6 @@
 #include "weather.h"
 #include "weathereffect.h"
 #include "commandcarditem.h"
-
 class Particle;
 #include "shovel.h"
 #include "button.h"
@@ -27,7 +25,6 @@ class Particle;
 #include "bucketzombie.h"
 #include "screenzombie.h"
 #include "footballzombie.h"
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -60,5 +57,4 @@ private:
     void onCardClicked();
     void updateCardButton();
 };
-
 #endif // MAINWINDOW_H

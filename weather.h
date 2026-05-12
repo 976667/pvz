@@ -1,13 +1,9 @@
 #ifndef WEATHER_H
 #define WEATHER_H
-
 #include <QObject>
 #include <QPointer>
-
 enum class Weather { Clear, Rain, Snow, Wind, Sandstorm };
-
 class QTimer;
-
 class WeatherManager : public QObject {
     Q_OBJECT
 public:
@@ -33,5 +29,4 @@ private:
     double m_baseIntervalMs = 33.0;
     double m_accumulatedMs = 0.0;
 };
-
 #endif // WEATHER_H

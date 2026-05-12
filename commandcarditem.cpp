@@ -130,6 +130,13 @@ void CommandCardItem::advance(int phase)
     if (upgradeFlashMs > 0) upgradeFlashMs -= 33;
 }
 
+void CommandCardItem::setReady()
+{
+    // 设置卡片为就绪状态，让usedAtMs为0，表示冷却已结束
+    usedAtMs = 0;
+    counter = cooldownTicks;  // 让计数器直接达到最大值，表示可以立即使用
+}
+
 void CommandCardItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     Q_UNUSED(event)

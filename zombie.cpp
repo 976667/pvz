@@ -25,14 +25,18 @@ void Zombie::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 {
     Q_UNUSED(option)
     Q_UNUSED(widget)
+
     if (!movie)
         return;
-    
+
     QImage image = movie->currentImage();
+
+    // 减速效果：速度<0.55时将图像染蓝
     if (speed < 0.55 && state != 3)
     {
         if (state != 2)
             movie->setSpeed(50);
+
         int w = image.width();
         int h = image.height();
         for (int i = 0; i < h; ++i)
@@ -42,7 +46,10 @@ void Zombie::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
                 line[j << 2] = 200;
         }
     }
+
     painter->drawImage(QRectF(-70, -100, 140, 140), image);
+
+    // 绘制头部动画
     if (head)
     {
         image = head->currentImage();

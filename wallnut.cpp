@@ -1,7 +1,6 @@
 #include "wallnut.h"
 #include "commandmanager.h"
 #include <QDebug>
-
 WallNut::WallNut()
 {
     baseHp = 4000;
@@ -13,32 +12,27 @@ WallNut::WallNut()
     time = 60;
     setMovie(":/images/WallNut.gif");
 }
-
 void WallNut::advance(int phase)
 {
     if (!phase)
         return;
     update();
-
     maxHp = int(baseHp * getHpMultiplier());
     if (hp > maxHp) {
         hp = maxHp;
     }
-
-    if (hp < lastHp) {
+    if (hp < lastHp) {//经验获取：每损失50点生命值获得1点经验
         int damageTaken = lastHp - hp;
         if (damageTaken > 0) {
             gainExperience(damageTaken / 50);
         }
         lastHp = hp;
     }
-
     if (hp <= 0)
     {
         delete this;
         return;
     }
-
     if (hp <= maxHp * 0.3 && state != 2)
     {
         state = 2;
@@ -49,19 +43,20 @@ void WallNut::advance(int phase)
         state = 1;
         setMovie(":/images/WallNut1.gif");
     }
-
-    if (++counter >= CommandManager::instance()->effectiveTicksFor(time))
+    if (++counter >= CommandManager::instance()->effectiveTicksFor(time))//定时被动经验：每60帧获得4点经验
+    {
+        counter = 0;
+        gainExperience(4);
+    }
     {
         counter = 0;
         gainExperience(4);
     }
 }
-
 double WallNut::getHpMultiplier() const
 {
     return 1.0 + (level - 1) * 0.5;
 }
-
 void WallNut::checkLevelUp()
 {
     static const int expRequired[] = {0, 500, 1500, 10000};
@@ -70,6 +65,6 @@ void WallNut::checkLevelUp()
         ++level;
         maxHp = int(baseHp * getHpMultiplier());
         hp = maxHp;
-        lastHp = maxHp;
+        lastHp = maxHp;//升级后恢复生命值到满，并重置经验
     }
 }

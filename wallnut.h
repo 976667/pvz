@@ -1,8 +1,6 @@
 #ifndef WALLNUT_H
 #define WALLNUT_H
-
 #include "plant.h"
-
 class WallNut : public Plant
 {
 public:
@@ -18,5 +16,4 @@ private:
     int baseHp;
     int lastHp;
 };
-
 #endif // WALLNUT_H

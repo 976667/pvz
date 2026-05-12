@@ -1,10 +1,8 @@
 #ifndef WEATHEREFFECT_H
 #define WEATHEREFFECT_H
-
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QList>
-
 class Particle : public QGraphicsItem {
 public:
     enum ParticleType { Raindrop, Snowflake, WindParticle, SandstormParticle };
@@ -20,5 +18,4 @@ private:
     qreal velocityX;
     qreal lifetime;
 };
-
 #endif // WEATHEREFFECT_H

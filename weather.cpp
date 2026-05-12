@@ -2,23 +2,19 @@
 #include "commandmanager.h"
 #include <QTimer>
 #include <QRandomGenerator>
-
 WeatherManager* WeatherManager::s_instance = nullptr;
-
 WeatherManager::WeatherManager(QObject *parent)
     : QObject(parent), m_current(Weather::Clear)
 {
     m_timer = new QTimer(this);
     connect(m_timer, &QTimer::timeout, this, &WeatherManager::nextWeather);
 }
-
 WeatherManager* WeatherManager::instance()
 {
     if (!s_instance)
         s_instance = new WeatherManager;
     return s_instance;
 }
-
 void WeatherManager::start(int intervalMs)
 {
     m_intervalMs = double(intervalMs);
@@ -30,7 +26,6 @@ void WeatherManager::start(int intervalMs)
     if (!m_gameTimer)
         m_timer->start(intervalMs);
 }
-
 void WeatherManager::syncToGameTimer(QTimer *gameTimer, int baseIntervalMs)
 {
     if (m_gameTimer) {
@@ -43,12 +38,10 @@ void WeatherManager::syncToGameTimer(QTimer *gameTimer, int baseIntervalMs)
         connect(m_gameTimer.data(), &QTimer::timeout, this, &WeatherManager::onGameTick);
     }
 }
-
 void WeatherManager::onGameTick()
 {
     if (!m_gameTimer) return;
     if (m_baseIntervalMs <= 0.0) return;
-
     double speedMult = CommandManager::instance()->speedMultiplier();
     m_accumulatedMs += m_baseIntervalMs * speedMult;
     if (m_accumulatedMs >= m_intervalMs) {
@@ -56,7 +49,6 @@ void WeatherManager::onGameTick()
         nextWeather();
     }
 }
-
 void WeatherManager::nextWeather()
 {
     static const Weather options[] = {
@@ -66,12 +58,10 @@ void WeatherManager::nextWeather()
         Weather::Wind,
         Weather::Sandstorm
     };
-
     Weather w = m_current;
     const int optionCount = int(sizeof(options) / sizeof(options[0]));
     while (w == m_current)
         w = options[QRandomGenerator::global()->bounded(optionCount)];
-
     if (w != m_current) {
         m_current = w;
         emit weatherChanged(w);

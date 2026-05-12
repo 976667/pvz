@@ -1,7 +1,6 @@
 #include "weathereffect.h"
 #include <QPainter>
 #include <QRandomGenerator>
-
 Particle::Particle(qreal x, qreal y, ParticleType t)
     : QGraphicsItem(nullptr), type(t), lifetime(0)
 {
@@ -21,7 +20,6 @@ Particle::Particle(qreal x, qreal y, ParticleType t)
         velocityX = QRandomGenerator::global()->bounded(4) - 2;
     }
 }
-
 QRectF Particle::boundingRect() const
 {
     if (type == Raindrop) {
@@ -34,7 +32,6 @@ QRectF Particle::boundingRect() const
         return QRectF(-2, -2, 4, 4);
     }
 }
-
 void Particle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(option);
@@ -56,7 +53,6 @@ void Particle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
         painter->drawRect(-2, -2, 4, 4);
     }
 }
-
 void Particle::advance(int phase)
 {
     if (phase == 0) return;
